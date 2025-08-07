@@ -10,19 +10,24 @@ export const syncUserCreation = inngest.createFunction(
   { id: "sync-user-from-clerk" },
   { event: "clerk/user.created" },
   async ({ event }) => {
-    const { id, first_name, last_name, email_address, image_url } = event.data;
+    const { id, first_name, last_name, email_addresses, image_url } = event.data;
 
-    const email = email_address?.[0]?.email_address ?? "";
+    // Fixed: Check if email_addresses exists and has at least one item
+    const email = email_addresses && email_addresses.length > 0 
+      ? email_addresses[0]?.email_address ?? "" 
+      : "";
 
     const userData = {
       _id: id,
-      name: `${first_name} ${last_name}`,
+      name: `${first_name || ""} ${last_name || ""}`.trim(),
       email,
       imageUrl: image_url,
     };
 
     await connectDB();
-    await User(userData);
+    // Fixed: Create new user instance and save it
+    const newUser = new User(userData);
+    await newUser.save();
   }
 );
 
@@ -31,12 +36,15 @@ export const syncUserUpdation = inngest.createFunction(
   { id: "update-user-from-clerk" },
   { event: "clerk/user.updated" },
   async ({ event }) => {
-    const { id, first_name, last_name, email_address, image_url } = event.data;
+    const { id, first_name, last_name, email_addresses, image_url } = event.data;
 
-    const email = email_address?.[0]?.email_address ?? "";
+    // Fixed: Check if email_addresses exists and has at least one item
+    const email = email_addresses && email_addresses.length > 0 
+      ? email_addresses[0]?.email_address ?? "" 
+      : "";
 
     const userData = {
-      name: `${first_name} ${last_name}`,
+      name: `${first_name || ""} ${last_name || ""}`.trim(),
       email,
       imageUrl: image_url,
     };
@@ -45,7 +53,6 @@ export const syncUserUpdation = inngest.createFunction(
     await User.findByIdAndUpdate(id, userData, { new: true });
   }
 );
-
 
 // Ingest function to delete user data from the database
 export const syncUserDeletion = inngest.createFunction(
