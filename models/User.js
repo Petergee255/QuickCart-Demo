@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const userSchema = new mongoose.Schema({
   _id: {
     type: String,
@@ -11,32 +12,19 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: false, // Temporarily make this optional for debugging
+    required: true,
     unique: true,
-    sparse: true, // This allows multiple documents with null/undefined email
   },
   imageUrl: {
     type: String,
-    required: false,
-    default: "",
+    required: true,
   },
   cartItems: {
     type: Object,
     default: {},
   },
-}, { 
-  minimize: false,
-  timestamps: true
-});
+},{minimize: false});
 
-// Add a pre-save hook to handle empty emails
-userSchema.pre('save', function(next) {
-  if (this.email === '') {
-    this.email = undefined;
-  }
-  next();
-});
-
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models.user || mongoose.model("user", userSchema);
 
 export default User;
