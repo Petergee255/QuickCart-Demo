@@ -44,12 +44,12 @@ export const AppContextProvider = (props) => {
 
         if (data.successs) {
           setUserData(data.user);
-          setCartItems(data.user.cartItems || {});
+          setCartItems(data.user.cartItems);
         }else {
-          toast.error(data.message || "Failed to fetch user data");
+          toast.error(data.message);
         }
     } catch (error) {
-        toast.error(error.message || "Failed to fetch user data");
+        toast.error(error.message);
     }
   };
 
