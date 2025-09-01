@@ -20,8 +20,14 @@ export async function POST(request) {
     }, 0);
 
     await inngest.send({
-      name: "user/order/created",
-      data: { userId, address, items, amount: amount + Math.floor(Math.random() * 0.02),date: Date.now() },
+      name: "order/created",
+      data: {
+        userId,
+        address,
+        items,
+        amount: amount + Math.floor(Math.random(amount * 0.02)),
+        date: Date.now(),
+      },
     });
 
     // clear user cart
@@ -29,8 +35,10 @@ export async function POST(request) {
     user.cartItems = [];
     await user.save();
 
-    return NextResponse.json({ success: true, message: "Order placed successfully" });
-
+    return NextResponse.json({
+      success: true,
+      message: "Order placed successfully",
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ success: false, message: error.message });
