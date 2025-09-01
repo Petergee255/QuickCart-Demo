@@ -12,7 +12,7 @@ export async function POST(request) {
     const {address} = await request.json();
 
     await connectDB()
-    const newAddress = await Address.create({...address,userId})
+    await Address.create({...address,userId})
 
     return NextResponse.json({success:true, message:"Address added successfully"})
 
