@@ -25,15 +25,15 @@ export async function POST(request) {
         userId,
         address,
         items,
-        amount: amount + Math.floor(Math.random(amount * 0.02)),
+        amount: amount + Math.floor(amount * 0.02),
         date: Date.now(),
       }
     });
 
     // clear user cart
     const user = await User.findById(userId);
-    user.cartItems = {};
-    await user.save();
+    user.cartItems = {}
+    await user.save()
 
     return NextResponse.json({
       success: true,
