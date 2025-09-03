@@ -27,12 +27,12 @@ export async function POST(request) {
         items,
         amount: amount + Math.floor(Math.random(amount * 0.02)),
         date: Date.now(),
-      },
+      }
     });
 
     // clear user cart
     const user = await User.findById(userId);
-    user.cartItems = [];
+    user.cartItems = {};
     await user.save();
 
     return NextResponse.json({
